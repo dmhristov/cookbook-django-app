@@ -1,0 +1,93 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+    <section class="h-100 gradient-custom-2">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-lg-9 col-xl-7" style="width: 100%;">
+                    <div class="card">
+
+                        <div class="rounded-top text-white d-flex flex-row"
+                             style="background-image: url({{ profile.get_cover_image }}); background-size: cover; max-height: 200px; background-repeat: no-repeat;">
+
+                            <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
+
+                                <img src="{{ profile.get_image }}"
+                                     alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
+                                     style="width: 150px; z-index: 1;">
+
+                                {% if is_owner %}
+                                    <a href="{% url 'edit profile' profile.user_id %}" type="button"
+                                       class="btn btn-primary"
+                                       data-mdb-ripple-color="dark"
+                                       style="z-index: 1;">
+                                        Edit profile
+                                    </a>
+
+                                {% endif %}
+                            </div>
+                            <div class="ms-3" style="margin-top: 130px;">
+                                <h5>{{ profile.full_name }}</h5>
+                            </div>
+                        </div>
+                        <div class="p-4 text-black" style="background-color: #f8f9fa;">
+                            <div class="d-flex justify-content-end text-center py-1">
+                                <div>
+                                    <p class="mb-1 h5">{{ recipes.count }}</p>
+                                    {% if recipes.count == 1 %}
+                                        <p class="small text-muted mb-0">Recipe</p>
+                                    {% else %}
+                                        <p class="small text-muted mb-0">Recipes</p>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="card-body p-4 text-black">
+                            <div class="mb-5">
+                                <p class="lead fw-normal mb-1">About</p>
+                                <div class="p-4" style="background-color: #f8f9fa;">
+                                    <p class="font-italic mb-1">{{ profile.description }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+
+            <div class="section-title">
+                {% if is_owner %}
+                    <h2>My recipes</h2>
+                {% else %}
+                    <h2>{{ profile.first_name }}'s recipes</h2>
+                {% endif %}
+            </div>
+
+            <div class="row portfolio-container">
+                {% if recipes %}
+                    {% for recipe in recipes %}
+                        <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+                            <div class="portfolio-wrap">
+                                <img src="{{ recipe.image.url }}" class="img-fluid" alt="">
+                                <div class="portfolio-info">
+                                    <h4>{{ recipe.title }}</h4>
+                                    <div class="portfolio-links">
+                                        <a href="{% url 'recipe details' recipe.pk %}" title="More Details">View
+                                            recipe</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <h2 class="text-center" style="">No recipes</h2>
+                {% endif %}
+            </div>
+    </section>
+{% endblock %}

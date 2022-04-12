@@ -1,0 +1,173 @@
+{% extends 'base/base.html' %}
+{% block content %}
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+
+            <ol>
+                <li><a href="{% url 'dashboard' 'all' %}">Home</a></li>
+                <li>Recipe Details</li>
+            </ol>
+
+        </div>
+    </section>
+    <section id="portfolio-details" class="portfolio-details">
+        <div class="container">
+
+            <div class="row gy-4">
+
+                <div class="col-lg-8">
+                    <div class="portfolio-details-slider swiper">
+                        <div class="align-items-center">
+                            <div class="">
+                                <img src="{{ recipe.image.url }}" alt="">
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="container mt-5">
+                        <div class="d-flex justify-content-center row">
+
+                            <div class="d-flex flex-column comment-section">
+                                <div class="p-2">
+                                    <form method="post" action="{% url 'comments' recipe.pk %}">
+                                        <div class="d-flex flex-row align-items-start"><img class="rounded-circle"
+                                                                                            src="{{ request.user.profile.get_image }}"
+                                                                                            width="40" height="40"
+                                                                                            alt="">
+                                            {{ comment_form.text }}
+                                            {% csrf_token %}
+                                        </div>
+                                        <div class="mt-2 text-right">
+                                            <button class="btn btn-primary btn-sm shadow-none" type="submit">Add
+                                                comment
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="bg-white p-2">
+                                {% if comments %}
+                                    {% for comment in comments %}
+                                        <hr>
+                                        <div class="d-flex flex-row user-info"><img class="rounded-circle"
+                                                                                    src="{{ comment.author.profile.get_image }}"
+                                                                                    width="40" height="40" alt="">
+                                            <div class="d-flex flex-column justify-content-start ml-2">
+                                                <a href="{% url 'profile details' comment.author_id %}"
+                                                   class="link-dark font-weight-bold text-xl-left">{{ comment.author.profile.full_name }}</a>
+                                                <span class="date text-black-50">{{ comment.created_on }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <p class="comment-text">{{ comment.text }}</p>
+                                        </div>
+
+                                        {% if comment.reply_set.all %}
+
+                                            <ul style="list-style:none;">
+                                                {% for reply in comment.reply_set.all %}
+                                                    <hr>
+                                                    <li>
+                                                        <div class="d-flex flex-row user-info"><img
+                                                                class="rounded-circle"
+                                                                src="{{ reply.author.profile.get_image }}"
+                                                                width="40" height="40" alt="">
+                                                            <div class="d-flex flex-column justify-content-start ml-2">
+                                                                <a href="{% url 'profile details' reply.author_id %}"
+                                                                   class="link-dark font-weight-bold text-xl-left">{{ reply.author.profile.full_name }}</a>
+                                                                <span class="date text-black-50">{{ reply.created_on }}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <p class="comment-text">{{ reply.text }}</p>
+                                                        </div>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+
+                                        {% endif %}
+
+                                        <ul style="list-style:none;">
+                                            <li>
+                                                <div class="p-2">
+                                                    <form method="post"
+                                                          action="{% url 'replies' recipe.pk comment.pk %}">
+                                                        <div class="d-flex flex-row align-items-start"><img
+                                                                class="rounded-circle"
+                                                                src="{{ request.user.profile.get_image }}"
+                                                                width="40" height="40" alt="">
+                                                            {{ reply_form.text }}
+                                                            {% csrf_token %}
+                                                        </div>
+                                                        <div class="mt-2 text-right">
+                                                            <button class="btn btn-primary btn-sm shadow-none"
+                                                                    type="submit">
+                                                                Add reply
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="portfolio-info">
+                        <h3>{{ recipe.title }}</h3>
+
+                        <ul>
+                            <li><strong>Category</strong>: {{ recipe.category }}</li>
+                            <li><strong>Author</strong>: <a
+                                    href="{% url 'profile details' profile.user_id %}">{{ profile.full_name }}</a></li>
+                            <li><strong>Uploaded</strong>: {{ recipe.created_on }}</li>
+                            <li><strong>Total likes</strong>: {{ recipe.total_likes }}
+
+                                <a href="{% url 'likes' recipe.pk %}" class="text-decoration-none text-danger btn-like">
+
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="red"
+                                         class="bi bi-heart-fill" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd"
+                                              d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"></path>
+                                    </svg>
+                                    Like
+                                </a></li>
+
+                            {% if is_owner %}
+                                <li>
+                                    <div class="btn-group">
+                                        <a href="{% url 'edit recipe' recipe.id %}"
+                                           class="btn btn-primary btn-space btn-edit" type="button">Edit</a>
+                                        <a href="{% url 'delete recipe' recipe.id %}" class="btn btn-danger btn-delete"
+                                           type="button">Delete</a>
+                                    </div>
+                                </li>
+                            {% endif %}
+
+                        </ul>
+
+                    </div>
+                    <div class="portfolio-description">
+                        <h2>Ingredients</h2>
+                        <p>
+                            {{ recipe.ingredients|linebreaksbr }}
+                        </p>
+                        <h2>Descrription</h2>
+                        <p>
+                            {{ recipe.description|linebreaksbr }}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+{% endblock %}

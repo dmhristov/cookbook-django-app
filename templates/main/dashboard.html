@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+    <section id="breadcrumbs" class="breadcrumbs">
+        <div class="container">
+            <ol>
+                <li><a href="{% url 'dashboard' 'all' %}">All</a></li>
+                <li><a href="{% url 'dashboard' 'Breakfast' %}">Breakfast</a></li>
+                <li><a href="{% url 'dashboard' 'Dinner' %}">Dinner</a></li>
+                <li><a href="{% url 'dashboard' 'Dessert' %}">Dessert</a></li>
+            </ol>
+        </div>
+    </section>
+
+    <section id="portfolio" class="portfolio">
+        <div class="container">
+            <div class="row portfolio-container">
+                {% for recipe in recipes %}
+                    <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+                        <div class="portfolio-wrap">
+                            <img src="{{ recipe.image.url }}" class="img-fluid" alt="">
+                            <div class="portfolio-info">
+                                <h4>{{ recipe.title }}</h4>
+                                <div class="portfolio-links">
+                                    <a href="{% url 'recipe details' recipe.pk %}" title="More Details">View recipe</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </section>
+
+{% endblock %}
