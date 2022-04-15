@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, ListView, DetailView, TemplateView, DeleteView
 
 from cookbook.main.forms import CreateRecipeForm, CreateCommentForm, CreateCommentReplyForm, EditRecipeForm
-from cookbook.common.helpers import RedirectLoggedUsersToDashboardMixin
+from cookbook.common.helpers import RedirectLoggedUsersToDashboardMixin, InvalidCommentRedirectMixin
 from cookbook.main.models import Recipe, Comment, Reply, Like
 from cookbook.accounts.models import Profile
 
@@ -85,16 +85,10 @@ class RecipeDetailsView(LoginRequiredMixin, DetailView):
         return context
 
 
-class CreateCommentView(LoginRequiredMixin, CreateView):
+class CreateCommentView(LoginRequiredMixin, InvalidCommentRedirectMixin, CreateView):
     model = Comment
     template_name = 'main/recipe-details.html'
     form_class = CreateCommentForm
-
-    def dispatch(self, request, *args, **kwargs):
-        response = super().dispatch(request, *args, **kwargs)
-        if not self.args:
-            return redirect(reverse_lazy('recipe details', kwargs={'pk': self.kwargs['pk']}))
-        return response
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -105,16 +99,10 @@ class CreateCommentView(LoginRequiredMixin, CreateView):
         return reverse_lazy('recipe details', kwargs={'pk': self.kwargs['pk']})
 
 
-class CreateCommenReplytView(LoginRequiredMixin, CreateView):
+class CreateCommenReplytView(LoginRequiredMixin, InvalidCommentRedirectMixin, CreateView):
     model = Reply
     template_name = 'main/recipe-details.html'
     form_class = CreateCommentReplyForm
-
-    def dispatch(self, request, *args, **kwargs):
-        response = super().dispatch(request, *args, **kwargs)
-        if not self.args:
-            return redirect(reverse_lazy('recipe details', kwargs={'pk': self.kwargs['pk']}))
-        return response
 
     def form_valid(self, form):
         form.instance.author = self.request.user

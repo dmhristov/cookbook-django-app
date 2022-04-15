@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 
 
 class AddBootstrapFormCLassMixin:
@@ -20,5 +21,9 @@ class RedirectLoggedUsersToDashboardMixin:
         return super().dispatch(request, *args, **kwargs)
 
 
-
-
+class InvalidCommentRedirectMixin:
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        if not args:
+            return redirect(reverse_lazy('recipe details', kwargs={'pk': kwargs['pk']}))
+        return response
