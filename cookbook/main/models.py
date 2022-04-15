@@ -33,10 +33,6 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
     )
 
-    is_liked = models.BooleanField(
-        default=False,
-    )
-
     total_likes = models.IntegerField(
         default=0,
     )
@@ -99,6 +95,7 @@ class Reply(models.Model):
 
     class Meta:
         ordering = ['-created_on']
+        verbose_name_plural = 'Replies'
 
 
 class Like(models.Model):

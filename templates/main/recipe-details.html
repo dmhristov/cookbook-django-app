@@ -5,7 +5,7 @@
 
             <ol>
                 <li><a href="{% url 'dashboard' 'all' %}">Home</a></li>
-                <li>Recipe Details</li>
+                <li>{{ recipe.title }}</li>
             </ol>
 
         </div>
@@ -159,7 +159,7 @@
                         <p>
                             {{ recipe.ingredients|linebreaksbr }}
                         </p>
-                        <h2>Descrription</h2>
+                        <h2>Description</h2>
                         <p>
                             {{ recipe.description|linebreaksbr }}
                         </p>

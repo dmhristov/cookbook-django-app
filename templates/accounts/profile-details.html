@@ -48,7 +48,9 @@
                             <div class="mb-5">
                                 <p class="lead fw-normal mb-1">About</p>
                                 <div class="p-4" style="background-color: #f8f9fa;">
-                                    <p class="font-italic mb-1">{{ profile.description }}</p>
+                                    {% if profile.description %}
+                                        <p class="font-italic mb-1">{{ profile.description }}</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

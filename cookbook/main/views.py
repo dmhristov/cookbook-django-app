@@ -90,6 +90,12 @@ class CreateCommentView(LoginRequiredMixin, CreateView):
     template_name = 'main/recipe-details.html'
     form_class = CreateCommentForm
 
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        if not self.args:
+            return redirect(reverse_lazy('recipe details', kwargs={'pk': self.kwargs['pk']}))
+        return response
+
     def form_valid(self, form):
         form.instance.author = self.request.user
         form.instance.recipe_id = self.kwargs['pk']
@@ -103,6 +109,12 @@ class CreateCommenReplytView(LoginRequiredMixin, CreateView):
     model = Reply
     template_name = 'main/recipe-details.html'
     form_class = CreateCommentReplyForm
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        if not self.args:
+            return redirect(reverse_lazy('recipe details', kwargs={'pk': self.kwargs['pk']}))
+        return response
 
     def form_valid(self, form):
         form.instance.author = self.request.user
